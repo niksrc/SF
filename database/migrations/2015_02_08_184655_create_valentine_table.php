@@ -24,6 +24,8 @@ class CreateValentineTable extends Migration {
 			$table->bigInteger('tel');
 			$table->string('lookingFor',2000);
 			$table->string('pic',200);
+			$table->string('userId',2000); //userid at gmail or facebook 
+			$table->boolean('social'); // 0 for facebook 1 for gmail
 		});
 	}
 
