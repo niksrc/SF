@@ -71,9 +71,33 @@ class ValentineController extends Controller {
 	}
 
 	public function getNotifications($id){
-		return Notifications::where('valentineId','=',$id)->get()->toArray();
+		return Notifications::where('valentineId','=',$id)->get()->toJson();
 	}
 
+	public function changeViewStatus($id){
+		$Notification = Notifications::find($id);
+		$Notification->status = 0;
+		if($Notification->save())
+			return Response::Json(array('error'=>false,'msg'=>'Notification is updated'),200) ;    
+	   	else
+        	return Response::Json(array('error'=>true,'msg'=>'Issue in updating'),200) ; 
+		
+	}
 	
-	
+	public function getAccess($id){
+		//save access request
+		$accessRequest = new Access();
+		$accessRequest->desperate = Session::get('shy_first_id');
+		$accessRequest->cool = $id;
+		$accessRequest->save();
+
+		//check if request from both side then notify
+		if(Access::getStatus(Session::get('shy_first_id'),$id)){
+			Valentine::Notify($id,Session::get('shy_first_id'));
+			return Response::Json(array('error'=>false,'msg'=>'Notified'),200);    
+		}
+
+
+
+	}
 }
