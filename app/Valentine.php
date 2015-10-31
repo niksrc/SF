@@ -2,18 +2,22 @@
 
 use Illuminate\Database\Eloquent\Model;
 use shyfirst\Access;
+use Illuminate\Support\Facades\DB;
 class Valentine extends Model {
 	
 	protected $table = "valentine";
 	public $timestamps = false;
 
-	public function getProfile($cool){
-		if($this->desperate===$cool){
-			return Valentine::find($cool);
-		}else{
-			$cols = Access::getAttr($this->desperate,$cool);
-			$cols = explode(',',$cols);
-			return Valentine::find($cool)->select($cols)->first();
-		}
+	public static function searchProfile($college,$sex,$offset=0){
+		return Valentine::where('sex','<>',$sex)->where('college',$college)->skip($offset)->take(6)->get();
 	}
+
+	public static function getDistinctColleges(){
+		return DB::table('valentine')->select(DB::raw('distinct college'))->get();
+	}
+	
+	public static function getExistingUser($Id){
+		return Valentine::where('userId',$Id)->first();
+	}
+
 }
